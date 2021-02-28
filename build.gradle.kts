@@ -4,6 +4,9 @@ plugins {
     id("application")
 }
 
+//apply plugin: 'kotlin-multiplatform'
+//apply plugin: 'kotlinx-serialization'
+
 repositories {
     jcenter()
     mavenCentral()
@@ -22,6 +25,7 @@ buildscript {
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
     implementation("io.ktor:ktor-server-core:1.5.2")
     implementation("io.ktor:ktor-server-netty:1.5.2")
     implementation("ch.qos.logback:logback-classic:1.2.3")
@@ -46,8 +50,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+group = "com.fernandocejas.restapi"
+version = "1.0-SNAPSHOT"
+
+//application {
+//    mainClass.set("com.fernandocejas.restapi.ApplicationKt")
+//}
+
 application {
-    group.set("com.fernando.restapi")
-    version = "1.0-SNAPSHOT"
-    mainClass.set("com.fernandocejas.restapi.ApplicationKt")
+    mainClass.set("io.ktor.server.netty.EngineMain")
 }

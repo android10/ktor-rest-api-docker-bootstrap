@@ -1,10 +1,18 @@
 package com.fernandocejas.restapi
 
-import io.ktor.application.Application
+import io.ktor.application.*
+import io.ktor.response.*
+import io.ktor.routing.*
 
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-fun Application.module() {
-
+fun Application.module(testing: Boolean = false) {
+    routing {
+        get("/") {
+            call.respondText("Hello, World!")
+        }
+    }
 }
+
+data class About(val appName: String, val appVersion: String, val appEnvironment: String)
