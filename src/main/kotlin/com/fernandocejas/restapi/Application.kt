@@ -9,7 +9,15 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module() {
     routing {
         get("/") {
-            call.respondText("REST Api: Hello, World!")
+            call.respondText("ktor-trinity: Hello, World!")
+        }
+
+        get("/about") {
+            val environment = when (environment.config.propertyOrNull("ktor.development")?.getString().toBoolean()) {
+                true -> "DEV MODE"
+                false -> "PROD MODE"
+            }
+            call.respondText(environment)
         }
     }
 }

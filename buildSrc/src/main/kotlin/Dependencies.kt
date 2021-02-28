@@ -18,6 +18,11 @@ object AppConfiguration {
     const val group = "com.fernandocejas.restapi"
     const val version = "1.0-SNAPSHOT"
     const val mainClass = "io.ktor.server.netty.EngineMain"
+    const val name = "ktor-trinity"
+
+    // In the case of 'io.ktor.development' jvm arg, the config
+    // value in the 'application.conf' file has precedence.
+    val jvmArgs = listOf("-Dio.ktor.development=true")
 }
 
 object Kotlin {

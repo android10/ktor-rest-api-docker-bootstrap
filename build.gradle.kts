@@ -15,7 +15,11 @@ repositories {
 
 group = AppConfiguration.group
 version = AppConfiguration.version
-application { mainClass.set(AppConfiguration.mainClass) }
+application {
+    mainClass.set(AppConfiguration.mainClass)
+    applicationName = AppConfiguration.name
+    applicationDefaultJvmArgs = AppConfiguration.jvmArgs
+}
 
 dependencies {
     // Application dependencies

@@ -20,10 +20,22 @@ tasks.named<Wrapper>("wrapper") {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-//tasks.register("runUnitTests") {
-//    description = "Runs all Unit Tests."
-//    dependsOn(":app:test${Default.BUILD_VARIANT}UnitTest")
-//}
+tasks.register("runUnitTests") {
+    description = "Runs all Unit Tests."
+    dependsOn(":test")
+}
 
-//tasks.register("runApp", Exec::class) {
-//}
+tasks.register("runDev", Exec::class) {
+    description = "Runs App in Development Mode."
+    dependsOn(":run")
+}
+
+tasks.register("runInContainer", Exec::class) {
+    description = "Runs App in Production Mode inside a Docker Container."
+    dependsOn(":run")
+}
+
+tasks.register("deployToHeroku", Exec::class) {
+    description = "Deploys a containerized Prod App to Heroku."
+    dependsOn(":run")
+}
