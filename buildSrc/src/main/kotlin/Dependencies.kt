@@ -13,8 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+object AppConfiguration {
+    const val group = "com.fernandocejas.restapi"
+    const val version = "1.0-SNAPSHOT"
+    const val mainClass = "io.ktor.server.netty.EngineMain"
+}
+
 object Kotlin {
-    const val standardLibrary = "1.4.10"
+    const val std = "1.4.10"
+    const val ktor = "1.5.2"
     const val coroutines = "1.3.9"
 }
 
@@ -23,7 +31,8 @@ object BuildPlugins {
         const val gradleVersion = "6.8.3"
     }
 
-    const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Kotlin.standardLibrary}"
+    const val application = "application"
+    const val kotlinJvm = "org.jetbrains.kotlin.jvm"
 }
 
 object ScriptPlugins {
@@ -32,11 +41,15 @@ object ScriptPlugins {
 }
 
 object Libraries {
-    private object Versions {
+    object Versions {
+        const val logBackVersion = "1.2.3"
     }
 
-    const val kotlinStdLib             = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Kotlin.standardLibrary}"
-    const val kotlinCoroutines         = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Kotlin.coroutines}"
+    const val kotlinStd        = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Kotlin.std}"
+    const val kotlinCoroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Kotlin.coroutines}"
+    const val ktorServerCore   = "io.ktor:ktor-server-core:${Kotlin.ktor}"
+    const val ktorServerNetty  = "io.ktor:ktor-server-netty:${Kotlin.ktor}"
+    const val logback          = "ch.qos.logback:logback-classic:${Versions.logBackVersion}"
 }
 
 object TestLibraries {
@@ -49,4 +62,5 @@ object TestLibraries {
     const val junit4          = "junit:junit:${Versions.junit4}"
     const val mockk           = "io.mockk:mockk:${Versions.mockk}"
     const val kluent          = "org.amshove.kluent:kluent:${Versions.kluent}"
+    const val serverTests     = "io.ktor:ktor-server-tests:${Kotlin.ktor}"
 }

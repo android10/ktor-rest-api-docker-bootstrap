@@ -15,10 +15,10 @@
  */
 package scripts
 
-//tasks.named<Wrapper>("wrapper") {
-//    gradleVersion = BuildPlugins.Versions.gradleVersion
-//    distributionType = Wrapper.DistributionType.ALL
-//}
+tasks.named<Wrapper>("wrapper") {
+    gradleVersion = BuildPlugins.Versions.gradleVersion
+    distributionType = Wrapper.DistributionType.ALL
+}
 
 //tasks.register("runUnitTests") {
 //    description = "Runs all Unit Tests."
