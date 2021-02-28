@@ -46,9 +46,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-group = "com.fernando.restapi"
-version = "1.0-SNAPSHOT"
-
 application {
+    group.set("com.fernando.restapi")
+    version = "1.0-SNAPSHOT"
     mainClass.set("com.fernandocejas.restapi.ApplicationKt")
 }
