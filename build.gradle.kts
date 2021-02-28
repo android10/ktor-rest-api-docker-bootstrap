@@ -1,24 +1,15 @@
 plugins {
+    // Application Specific Plugins
     id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.0"
     id("application")
+
+    // Internal Script plugins
+    id(ScriptPlugins.compilation)
 }
 
 repositories {
     jcenter()
     mavenCentral()
-    maven(url = "https://kotlin.bintray.com/kotlinx")
-}
-
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath (BuildPlugins.kotlinGradlePlugin)
-    }
 }
 
 dependencies {
@@ -27,22 +18,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:1.5.2")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
-    testImplementation("io.ktor:ktor-server-tests:1.4.0")
-}
-
-val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
-val compileTestKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
-
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    testImplementation("io.ktor:ktor-server-tests:1.5.2")
 }
 
 group = "com.fernandocejas.restapi"
