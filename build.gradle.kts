@@ -27,6 +27,7 @@ dependencies {
     implementation(Libraries.kotlinCoroutines)
     implementation(Libraries.ktorServerCore)
     implementation(Libraries.ktorServerNetty)
+    implementation(Libraries.ktorTlsCertificate)
     implementation(Libraries.logback)
 
     // Test dependencies

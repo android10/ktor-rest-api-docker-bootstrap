@@ -15,7 +15,7 @@
  */
 
 object AppConfiguration {
-    const val group = "com.fernandocejas.restapi"
+    const val group = "com.fernandocejas.ktor.trinity"
     const val version = "1.0-SNAPSHOT"
     const val mainClass = "io.ktor.server.netty.EngineMain"
     const val name = "ktor-trinity"
@@ -50,11 +50,12 @@ object Libraries {
         const val logBackVersion = "1.2.3"
     }
 
-    const val kotlinStd        = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Kotlin.std}"
-    const val kotlinCoroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Kotlin.coroutines}"
-    const val ktorServerCore   = "io.ktor:ktor-server-core:${Kotlin.ktor}"
-    const val ktorServerNetty  = "io.ktor:ktor-server-netty:${Kotlin.ktor}"
-    const val logback          = "ch.qos.logback:logback-classic:${Versions.logBackVersion}"
+    const val kotlinStd          = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Kotlin.std}"
+    const val kotlinCoroutines   = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Kotlin.coroutines}"
+    const val ktorServerCore     = "io.ktor:ktor-server-core:${Kotlin.ktor}"
+    const val ktorServerNetty    = "io.ktor:ktor-server-netty:${Kotlin.ktor}"
+    const val ktorTlsCertificate = "io.ktor:ktor-network-tls-certificates:${Kotlin.ktor}"
+    const val logback            = "ch.qos.logback:logback-classic:${Versions.logBackVersion}"
 }
 
 object TestLibraries {

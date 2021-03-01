@@ -15,14 +15,23 @@
  */
 package scripts
 
+// -------------------------------------------------------------------------------------
+// TODO: This should be removed when properly implementing Certificate Authority
+// TODO: providing TLS certificates
+// -------------------------------------------------------------------------------------
+tasks.register("generateJks", JavaExec::class) {
+    description = "Generate self signed SSL certificate."
+    classpath =  project.convention.getPlugin(JavaPluginConvention::class)
+        .sourceSets.findByName("main")!!.runtimeClasspath
+    main = "com.fernandocejas.ktor.trinity.CertificateGenerator"
+    dependsOn("classes")
+}
+getTasksByName("run", false).first().dependsOn("generateJks")
+// -------------------------------------------------------------------------------------
+
 tasks.named<Wrapper>("wrapper") {
     gradleVersion = BuildPlugins.Versions.gradleVersion
     distributionType = Wrapper.DistributionType.ALL
-}
-
-tasks.register("runUnitTests") {
-    description = "Runs all Unit Tests."
-    dependsOn(":test")
 }
 
 tasks.register("runDev", Exec::class) {
@@ -38,4 +47,9 @@ tasks.register("runInContainer", Exec::class) {
 tasks.register("deployToHeroku", Exec::class) {
     description = "Deploys a containerized Prod App to Heroku."
     dependsOn(":run")
+}
+
+tasks.register("runUnitTests") {
+    description = "Runs all Unit Tests."
+    dependsOn(":test")
 }
