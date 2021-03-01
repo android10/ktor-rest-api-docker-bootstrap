@@ -10,8 +10,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module() {
     val appEnvironment = Environment(environment)
 
-//    install(HttpsRedirect) { sslPort = appEnvironment.sslPort }
-    install(HttpsRedirect) { sslPort = 8443 }
+    install(HttpsRedirect) { sslPort = appEnvironment.sslPort }
     route(appEnvironment)
 }
 
