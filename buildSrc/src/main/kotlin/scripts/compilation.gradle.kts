@@ -15,8 +15,12 @@
  */
 package scripts
 
+// Required by the 'shadowJar' task
+project.setProperty("mainClassName", AppConfiguration.mainClass)
+
 plugins {
-    id("application") apply false
+    id(BuildPlugins.application) apply false
+    id("com.github.johnrengelman.shadow") apply false
 }
 
 object Jvm {
