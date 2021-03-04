@@ -26,7 +26,7 @@ tasks.register("generateJks", JavaExec::class) {
     main = "com.fernandocejas.ktor.trinity.CertificateGenerator"
     dependsOn("classes")
 }
-getTasksByName("run", false).first().dependsOn("generateJks")
+getTasksByName("build", false).first().dependsOn("generateJks")
 // -------------------------------------------------------------------------------------
 
 tasks.named<Wrapper>("wrapper") {

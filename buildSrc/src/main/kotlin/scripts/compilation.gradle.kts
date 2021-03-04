@@ -33,7 +33,7 @@ object JarArtifact {
     const val BASENAME = "ktor-trinity"
     const val CLASSIFIER = "fat"
     const val VERSION = "1.0"
-    const val FILENAME = "ktor-trinity-1.0-fat.jar"
+    const val FILENAME = "ktor-trinity-fat.jar"
 }
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
