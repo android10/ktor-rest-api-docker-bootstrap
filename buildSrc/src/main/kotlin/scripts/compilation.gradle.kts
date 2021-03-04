@@ -16,16 +16,24 @@
 package scripts
 
 // Required by the 'shadowJar' task
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 project.setProperty("mainClassName", AppConfiguration.mainClass)
 
 plugins {
-    id(BuildPlugins.application) apply false
+    id("application") apply false
     id("com.github.johnrengelman.shadow") apply false
 }
 
 object Jvm {
     const val TARGET = "1.8"
     val SOURCE_COMPATIBILITY = JavaVersion.VERSION_1_8
+}
+
+object JarArtifact {
+    const val BASENAME = "ktor-trinity"
+    const val CLASSIFIER = "fat"
+    const val VERSION = "1.0"
+    const val FILENAME = "ktor-trinity-1.0-fat.jar"
 }
 
 val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
@@ -37,4 +45,16 @@ compileTestKotlin.kotlinOptions { jvmTarget = Jvm.TARGET }
 java {
     sourceCompatibility = Jvm.SOURCE_COMPATIBILITY
     targetCompatibility = Jvm.SOURCE_COMPATIBILITY
+}
+
+tasks.withType<ShadowJar> {
+    archiveBaseName.set(JarArtifact.BASENAME)
+    archiveClassifier.set(JarArtifact.CLASSIFIER)
+    archiveVersion.set(JarArtifact.VERSION)
+    archiveFileName.set(JarArtifact.FILENAME)
+
+    exclude("META-INF/INDEX.LIST")
+    exclude("META-INF/*.SF")
+    exclude("META-INF/*.DSA")
+    exclude("META-INF/*.RSA")
 }
