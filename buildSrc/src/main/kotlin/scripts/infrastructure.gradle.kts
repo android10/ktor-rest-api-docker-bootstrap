@@ -15,8 +15,9 @@
  */
 package scripts
 
-import org.apache.tools.ant.taskdefs.ExecTask
 import java.lang.StringBuilder
+
+val DELIMITER = " "
 
 // -------------------------------------------------------------------------------------
 // TODO: This should be removed when properly implementing Certificate Authority
@@ -59,21 +60,14 @@ object DockerConfig {
     const val CONTAINER_SSL_PORT = 8443
 }
 
-// docker run -m512M --cpus 1 -t -p 80:5000 -p 443:8443 -p 8443:8443 --rm ktor-trinity
 tasks.register("dockerRun", Exec::class) {
     description = "Runs App in Production Mode inside a Docker Container."
-    commandLine("docker", "run",
-        "-m", DockerConfig.MEMORY,
-        "--cpus", DockerConfig.CPUS, "-t",
-        "-p", StringBuilder().append(DockerConfig.HOST_PORT).append(":").append(DockerConfig.CONTAINER_PORT).toString(),
-        "-p", StringBuilder().append(DockerConfig.HOST_SSL_PORT).append(":").append(DockerConfig.CONTAINER_SSL_PORT).toString(),
-        "-p", StringBuilder().append(DockerConfig.CONTAINER_SSL_PORT).append(":").append(DockerConfig.CONTAINER_SSL_PORT).toString(),
-        "-rm", "ktor-trinity")
+    commandLine("docker run -m512M --cpus 1 -t -p 80:5000 -p 443:8443 -p 8443:8443 --rm ktor-trinity".split(DELIMITER))
 }
 
 tasks.register("dockerListImages", Exec::class) {
     description = "Runs App in Production Mode inside a Docker Container."
-    commandLine("docker", "image", "ls")
+    commandLine("docker image ls".split(DELIMITER))
 }
 
 // -------------------------------------------------------------------------------------
