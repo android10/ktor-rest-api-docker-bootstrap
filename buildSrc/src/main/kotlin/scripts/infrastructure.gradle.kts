@@ -15,9 +15,9 @@
  */
 package scripts
 
-import java.lang.StringBuilder
+import scripts.Compilation_gradle.JarArtifact
 
-val DELIMITER = " "
+fun String.Companion.emptySpace() = ""
 
 // -------------------------------------------------------------------------------------
 // TODO: This should be removed when properly implementing Certificate Authority
@@ -58,16 +58,25 @@ object DockerConfig {
     const val HOST_SSL_PORT = 443
     const val CONTAINER_PORT = 5000
     const val CONTAINER_SSL_PORT = 8443
+    const val ARTIFACT = JarArtifact.BASENAME
 }
 
 tasks.register("dockerRun", Exec::class) {
+    val command = "docker run " +
+            "-m${DockerConfig.MEMORY} " +
+            "--cpus ${DockerConfig.CPUS} -t " +
+            "-p ${DockerConfig.HOST_PORT}:${DockerConfig.CONTAINER_PORT} " +
+            "-p ${DockerConfig.HOST_SSL_PORT}:${DockerConfig.CONTAINER_SSL_PORT} " +
+            "-p ${DockerConfig.CONTAINER_SSL_PORT}:${DockerConfig.CONTAINER_SSL_PORT} " +
+            "--rm ${DockerConfig.ARTIFACT}"
+
     description = "Runs App in Production Mode inside a Docker Container."
-    commandLine("docker run -m512M --cpus 1 -t -p 80:5000 -p 443:8443 -p 8443:8443 --rm ktor-trinity".split(DELIMITER))
+    commandLine(command.split(String.emptySpace()))
 }
 
 tasks.register("dockerListImages", Exec::class) {
-    description = "Runs App in Production Mode inside a Docker Container."
-    commandLine("docker image ls".split(DELIMITER))
+    description = "List available docker images in the host machine."
+    commandLine("docker image ls".split(String.emptySpace()))
 }
 
 // -------------------------------------------------------------------------------------
@@ -75,5 +84,5 @@ tasks.register("dockerListImages", Exec::class) {
 // -------------------------------------------------------------------------------------
 tasks.register("deployToHeroku", Exec::class) {
     description = "Deploys a containerized Prod App to Heroku."
-    dependsOn(":run")
+    dependsOn("build")
 }
