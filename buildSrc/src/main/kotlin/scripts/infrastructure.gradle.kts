@@ -15,6 +15,9 @@
  */
 package scripts
 
+import org.apache.tools.ant.taskdefs.ExecTask
+import java.lang.StringBuilder
+
 // -------------------------------------------------------------------------------------
 // TODO: This should be removed when properly implementing Certificate Authority
 // TODO: providing TLS certificates
@@ -36,20 +39,47 @@ tasks.named<Wrapper>("wrapper") {
 
 tasks.register("runDev", Exec::class) {
     description = "Runs App in Development Mode."
-    dependsOn(":run")
-}
-
-tasks.register("runInContainer", Exec::class) {
-    description = "Runs App in Production Mode inside a Docker Container."
-    dependsOn(":run")
-}
-
-tasks.register("deployToHeroku", Exec::class) {
-    description = "Deploys a containerized Prod App to Heroku."
-    dependsOn(":run")
+    dependsOn("run")
 }
 
 tasks.register("runUnitTests") {
     description = "Runs all Unit Tests."
-    dependsOn(":test")
+    dependsOn("test")
+}
+
+// -------------------------------------------------------------------------------------
+// Docker Gradle Logic
+// -------------------------------------------------------------------------------------
+object DockerConfig {
+    const val MEMORY = "512M"
+    const val CPUS = "1"
+    const val HOST_PORT = 80
+    const val HOST_SSL_PORT = 443
+    const val CONTAINER_PORT = 5000
+    const val CONTAINER_SSL_PORT = 8443
+}
+
+// docker run -m512M --cpus 1 -t -p 80:5000 -p 443:8443 -p 8443:8443 --rm ktor-trinity
+tasks.register("dockerRun", Exec::class) {
+    description = "Runs App in Production Mode inside a Docker Container."
+    commandLine("docker", "run",
+        "-m", DockerConfig.MEMORY,
+        "--cpus", DockerConfig.CPUS, "-t",
+        "-p", StringBuilder().append(DockerConfig.HOST_PORT).append(":").append(DockerConfig.CONTAINER_PORT).toString(),
+        "-p", StringBuilder().append(DockerConfig.HOST_SSL_PORT).append(":").append(DockerConfig.CONTAINER_SSL_PORT).toString(),
+        "-p", StringBuilder().append(DockerConfig.CONTAINER_SSL_PORT).append(":").append(DockerConfig.CONTAINER_SSL_PORT).toString(),
+        "-rm", "ktor-trinity")
+}
+
+tasks.register("dockerListImages", Exec::class) {
+    description = "Runs App in Production Mode inside a Docker Container."
+    commandLine("docker", "image", "ls")
+}
+
+// -------------------------------------------------------------------------------------
+// Heroku Gradle Logic
+// -------------------------------------------------------------------------------------
+tasks.register("deployToHeroku", Exec::class) {
+    description = "Deploys a containerized Prod App to Heroku."
+    dependsOn(":run")
 }
