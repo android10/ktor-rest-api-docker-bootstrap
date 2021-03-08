@@ -84,6 +84,7 @@ object Docker {
         const val REMOVE_DANGLING_IMAGES = "docker image prune --filter=dangling=true -f"
 
         fun buildExec(command: String) = command.split(DELIMITER)
+        fun log(command: String) = ""
     }
 }
 
@@ -108,7 +109,7 @@ tasks.register("dockerRunDetached", Exec::class) {
 
 tasks.register("dockerStop", Exec::class) {
     group = Docker.GROUP
-    description = "Stop running Container in host."
+    description = "Stops running Container in host."
     commandLine(Docker.Commands.buildExec(Docker.Commands.STOP_CONTAINER))
 }
 
@@ -134,6 +135,25 @@ tasks.register("dockerRemoveDanglingImages", Exec::class) {
     group = Docker.GROUP
     description = "Removes all the dangling images if any."
     commandLine(Docker.Commands.buildExec(Docker.Commands.REMOVE_DANGLING_IMAGES))
+}
+
+tasks.register("dockerTasks", Exec::class) {
+    group = Docker.GROUP
+    description = "Lists all Docker Tasks."
+    commandLine("./gradlew tasks --group ${Docker.GROUP}".split(" "))
+}
+
+tasks.withType<Exec> {
+    if (group == Docker.GROUP) {
+        doFirst {
+            println("Docker Command:".plus(System.lineSeparator())
+                .plus(commandLine.toString()
+                    .replace(",", "")
+                    .replace("[", "")
+                    .replace("]", "")))
+            println(System.lineSeparator().plus("Command Output:"))
+        }
+    }
 }
 
 // -------------------------------------------------------------------------------------
