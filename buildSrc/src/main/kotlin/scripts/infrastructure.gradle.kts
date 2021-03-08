@@ -17,8 +17,6 @@ package scripts
 
 import scripts.Compilation_gradle.JarArtifact
 
-fun String.Companion.emptySpace() = ""
-
 // -------------------------------------------------------------------------------------
 // TODO: This should be removed when properly implementing Certificate Authority
 // TODO: providing TLS certificates
@@ -51,32 +49,91 @@ tasks.register("runUnitTests") {
 // -------------------------------------------------------------------------------------
 // Docker Gradle Logic
 // -------------------------------------------------------------------------------------
-object DockerConfig {
-    const val MEMORY = "512M"
-    const val CPUS = "1"
-    const val HOST_PORT = 80
-    const val HOST_SSL_PORT = 443
-    const val CONTAINER_PORT = 5000
-    const val CONTAINER_SSL_PORT = 8443
-    const val ARTIFACT = JarArtifact.BASENAME
+object Docker {
+    const val GROUP = "Docker"
+
+    object Config {
+        const val MEMORY = "512M"
+        const val CPUS = "1"
+        const val HOST_PORT = 80
+        const val HOST_SSL_PORT = 443
+        const val CONTAINER_PORT = 5000
+        const val CONTAINER_SSL_PORT = 8443
+        const val ARTIFACT = JarArtifact.BASENAME
+    }
+
+    object Commands {
+        private const val DELIMITER = " "
+        private const val RUN_PARAMS =
+            "-m${Config.MEMORY} " +
+            "--cpus ${Config.CPUS} -t " +
+            "-p ${Config.HOST_PORT}:${Config.CONTAINER_PORT} " +
+            "-p ${Config.HOST_SSL_PORT}:${Config.CONTAINER_SSL_PORT} " +
+            "-p ${Config.CONTAINER_SSL_PORT}:${Config.CONTAINER_SSL_PORT} " +
+            "--rm ${Config.ARTIFACT}"
+
+        private const val RUN = "docker run --name=${Config.ARTIFACT}"
+
+        const val BUILD = "docker build -t ${Config.ARTIFACT} ."
+        const val RUN_ATTACHED = RUN.plus(DELIMITER).plus(RUN_PARAMS)
+        const val RUN_DETACHED = RUN.plus(DELIMITER).plus("-d").plus(DELIMITER).plus(RUN_PARAMS)
+        const val STOP_CONTAINER = "docker stop ${Config.ARTIFACT}"
+        const val LIST_IMAGES = "docker image ls"
+        const val LIST_CONTAINERS = "docker ps -a"
+        const val REMOVE_IMAGE = "docker image rm -f ${Config.ARTIFACT}"
+        const val REMOVE_DANGLING_IMAGES = "docker image prune --filter=dangling=true -f"
+
+        fun buildExec(command: String) = command.split(DELIMITER)
+    }
+}
+
+tasks.register("dockerBuildImage", Exec::class) {
+    group = Docker.GROUP
+    description = "Builds a docker image containing the Ktor Application."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.BUILD))
+    dependsOn("shadowJar")
 }
 
 tasks.register("dockerRun", Exec::class) {
-    val command = "docker run " +
-            "-m${DockerConfig.MEMORY} " +
-            "--cpus ${DockerConfig.CPUS} -t " +
-            "-p ${DockerConfig.HOST_PORT}:${DockerConfig.CONTAINER_PORT} " +
-            "-p ${DockerConfig.HOST_SSL_PORT}:${DockerConfig.CONTAINER_SSL_PORT} " +
-            "-p ${DockerConfig.CONTAINER_SSL_PORT}:${DockerConfig.CONTAINER_SSL_PORT} " +
-            "--rm ${DockerConfig.ARTIFACT}"
+    group = Docker.GROUP
+    description = "Runs App inside a Docker Container."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.RUN_ATTACHED))
+}
 
-    description = "Runs App in Production Mode inside a Docker Container."
-    commandLine(command.split(String.emptySpace()))
+tasks.register("dockerRunDetached", Exec::class) {
+    group = Docker.GROUP
+    description = "Runs App inside a Docker Container in detached mode."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.RUN_DETACHED))
+}
+
+tasks.register("dockerStop", Exec::class) {
+    group = Docker.GROUP
+    description = "Stop running Container in host."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.STOP_CONTAINER))
 }
 
 tasks.register("dockerListImages", Exec::class) {
-    description = "List available docker images in the host machine."
-    commandLine("docker image ls".split(String.emptySpace()))
+    group = Docker.GROUP
+    description = "Lists available docker images in the host machine."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.LIST_IMAGES))
+}
+
+tasks.register("dockerListContainers", Exec::class) {
+    group = Docker.GROUP
+    description = "Lists running docker containers in the host machine."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.LIST_CONTAINERS))
+}
+
+tasks.register("dockerRemoveImage", Exec::class) {
+    group = Docker.GROUP
+    description = "Removes this application docker image."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.REMOVE_IMAGE))
+}
+
+tasks.register("dockerRemoveDanglingImages", Exec::class) {
+    group = Docker.GROUP
+    description = "Removes all the dangling images if any."
+    commandLine(Docker.Commands.buildExec(Docker.Commands.REMOVE_DANGLING_IMAGES))
 }
 
 // -------------------------------------------------------------------------------------
